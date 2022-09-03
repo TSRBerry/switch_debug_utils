@@ -1,5 +1,8 @@
 name: Build dkp gdb image with Python3 support
 
+on:
+  workflow_dispatch:
+
 permissions:
   contents: read
   packages: write
