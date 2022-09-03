@@ -28,9 +28,10 @@ ENV DEVKITPPC=/opt/devkitpro/devkitPPC
 ENV PATH=${DEVKITPRO}/tools/bin:${DEVKITPRO}/devkitA64/bin:${DEVKITARM}/bin:${PATH}
 
 RUN git clone https://github.com/devkitPro/binutils-gdb -b devkitA64 \
-    && cd binutils-gdb \
+    && cp -r binutils-gdb gdb-a64 && cd gdb-a64 \
     && ./configure --with-python=/usr/bin/python3 --prefix=/opt/devkitpro/devkitA64 --target=aarch64-none-elf \
-    && make -j ${MAKE_JOBS} && make install
+    && make -j ${MAKE_JOBS} && make install \
+    && cd .. && rm -r gdb-a64
 
 RUN cd binutils-gdb \
     && make clean && git checkout -B devkitARM-gdb --track origin/devkitARM-gdb -f \
