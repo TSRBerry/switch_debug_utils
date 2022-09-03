@@ -1,0 +1,48 @@
+name: GDB with python3 support
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  arm:
+    runs-on: ubuntu-latest
+    name: devkitARM
+    container: devkitpro/devkitarm
+
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/checkout@v3
+        with:
+          repository: devkitPro/binutils-gdb
+          ref: devkitARM-gdb
+          path: build-gdb
+      - run: apt install -y python3-dev
+      - run: cp ./.binutils-gdb/arm-release.sh ./build-gdb/
+      - run: cd build-gdb && chmod +x arm-release.sh && ./arm-release.sh -g gdb
+      - uses: softprops/action-gh-release@v0.1.14
+        with:
+          files: gdb-*.tar.gz
+          name: devkitARM GDB with Python3 support
+
+
+  a64:
+    runs-on: ubuntu-latest
+    name: devkitA64
+
+    container: devkitpro/devkita64
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          repository: devkitPro/binutils-gdb
+          ref: devkitA64
+          path: build-gdb
+      - run: apt install -y python3-dev
+      - run: cp ./.binutils-gdb/a64-release.sh ./build-gdb/
+      - run: cd build-gdb && chmod +x a64-release.sh && ./a64-release.sh -g gdb
+      - uses: softprops/action-gh-release@v0.1.14
+        with:
+          files: gdb-*.tar.gz
+          name: devkitA64 GDB with Python3 support
