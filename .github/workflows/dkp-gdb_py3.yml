@@ -21,7 +21,7 @@ jobs:
           path: build-gdb
       - name: Install required packages
         run: |
-          make git-core cmake python3-dev build-essential wget \
+          make cmake python3-dev build-essential wget \
           bison flex libncurses5-dev libreadline-dev texinfo pkg-config \
           python3-pip python3-setuptools libglib2.0-dev libc6-dbg \
           autotools-dev automake autoconf liblz4-dev libelf-dev \
