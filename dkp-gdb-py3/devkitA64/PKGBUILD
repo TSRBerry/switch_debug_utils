@@ -1,0 +1,56 @@
+# Maintainer: TSR Berry <20988865+TSRBerry@users.noreply.github.com>
+pkgname='devkitA64-gdb-py3-git'
+pkgver=11.2
+pkgrel=1
+pkgdesc="GNU debugger for devkitA64 with python3 support"
+arch=('any')
+url="https://github.com/devkitPro/binutils-gdb/tree/devkitA64"
+license=('GPL')
+groups=()
+depends=('devkitA64' 'debuginfod' 'expat' 'guile' 'xz' 'mpfr' 'python>=3.7.0' 'zlib')
+makedepends=('git' 'gmp')
+provides=('devkitA64-gdb')
+conflicts=('devkitA64-gdb')
+replaces=()
+backup=()
+options=()
+install=
+source=('git+https://github.com/devkitPro/binutils-gdb#branch=devkitA64')
+noextract=()
+md5sums=('SKIP')
+
+pkgver() {
+	cd "$srcdir/binutils-gdb"
+    # Source: src-release.sh getver()
+    if grep 'AC_INIT.*BFD_VERSION' gdb/configure.ac >/dev/null 2>&1; then
+	    bfd/configure --version | sed -n -e '1s,.* ,,p'
+    elif test -f gdb/common/create-version.sh; then
+	    gdb/common/create-version.sh gdb 'dummy-host' 'dummy-target' VER.tmp
+	    cat VER.tmp | grep 'version\[\]' | sed 's/.*"\([^"]*\)".*/\1/' | sed 's/-git$//'
+        rm -f VER.tmp
+    elif test gdb = "gdb"; then
+	    ./gdbsupport/create-version.sh gdb 'dummy-host' 'dummy-target' VER.tmp
+	    cat VER.tmp | grep 'version\[\]' | sed 's/.*"\([^"]*\)".*/\1/' | sed 's/-git$//'
+        rm -f VER.tmp
+    elif test -f gdb/version.in; then
+	    head -n 1 gdb/version.in
+    else
+	    echo VERSION
+    fi
+}
+
+build() {
+	cd "$srcdir/binutils-gdb"
+	./configure --with-python=/usr/bin/python3 --prefix=/opt/devkitpro/devkitA64 --target=aarch64-none-elf
+	make
+}
+
+# check() {
+# 	cd "$srcdir/binutils-gdb"
+# 	make check
+# }
+
+package() {
+	cd "$srcdir/binutils-gdb"
+	make DESTDIR="$pkgdir" install
+}
