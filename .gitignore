@@ -1,0 +1,3 @@
+# Exclude temp makepkg files
+dkp-gdb-py3/
+!dkp-gdb-py3/**/PKGBUILD
